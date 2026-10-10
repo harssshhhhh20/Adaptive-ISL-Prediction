@@ -1,0 +1,14 @@
+# Large / regenerable artefacts (see REPRODUCIBILITY.md to rebuild; share models via release or drive link)
+data/videos/
+data/include/videos/
+data/frames/
+data/_raw_videos/
+data/include/_raw/
+features/
+models/torch/
+results/runs/**/*.pt
+results/runs/**/*.weights.pkl
+logs/
+__pycache__/
+*.pyc
+.DS_Store

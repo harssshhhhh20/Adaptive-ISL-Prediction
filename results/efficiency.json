@@ -1,0 +1,226 @@
+{
+ "models": {
+  "A_rgb": {
+   "params": 1194600,
+   "mflops": 30.707712,
+   "latency_ms": 1.9838750013150275,
+   "latency_ms_per_frame": 0.07085267861839384
+  },
+  "B_pose": {
+   "params": 1060158,
+   "mflops": 23.256576,
+   "latency_ms": 3.829895460512489,
+   "latency_ms_per_frame": 0.1367819807325889
+  },
+  "C_hand": {
+   "params": 1078200,
+   "mflops": 24.256512,
+   "latency_ms": 2.824395487550646,
+   "latency_ms_per_frame": 0.10087126741252307
+  },
+  "skel_concat": {
+   "params": 1416606,
+   "mflops": 43.126272,
+   "latency_ms": 4.079500038642436,
+   "latency_ms_per_frame": 0.14569642995151558
+  },
+  "D_rgb_pose_concat": {
+   "params": 1533006,
+   "mflops": 49.577472,
+   "latency_ms": 2.3910210002213717,
+   "latency_ms_per_frame": 0.08539360715076327
+  },
+  "E_rgb_hand_concat": {
+   "params": 1551048,
+   "mflops": 50.577408,
+   "latency_ms": 1.8400835106149316,
+   "latency_ms_per_frame": 0.06571726823624756
+  },
+  "F_pose_hand_concat": {
+   "params": 1416606,
+   "mflops": 43.126272,
+   "latency_ms": 2.431000000797212,
+   "latency_ms_per_frame": 0.08682142859990043
+  },
+  "D_rgb_pose_trel": {
+   "params": 1539248,
+   "mflops": 52.222464,
+   "latency_ms": 7.40649999352172,
+   "latency_ms_per_frame": 0.26451785691149
+  },
+  "E_rgb_hand_trel": {
+   "params": 1557290,
+   "mflops": 53.2224,
+   "latency_ms": 6.708771048579365,
+   "latency_ms_per_frame": 0.2395989660206916
+  },
+  "F_pose_hand_trel": {
+   "params": 1422848,
+   "mflops": 45.771264,
+   "latency_ms": 6.111312482971698,
+   "latency_ms_per_frame": 0.21826116010613208
+  },
+  "G_concat": {
+   "params": 1819974,
+   "mflops": 65.576448,
+   "latency_ms": 4.834624996874481,
+   "latency_ms_per_frame": 0.17266517845980292
+  },
+  "H_fixed_weight": {
+   "params": 1709193,
+   "mflops": 59.383296,
+   "latency_ms": 4.5606669737026095,
+   "latency_ms_per_frame": 0.16288096334652177
+  },
+  "I_seq_attention": {
+   "params": 1820553,
+   "mflops": 59.605632,
+   "latency_ms": 5.291541514452547,
+   "latency_ms_per_frame": 0.18898362551616238
+  },
+  "I_xattn": {
+   "params": 2265798,
+   "mflops": 106.348032,
+   "latency_ms": 10.242020944133401,
+   "latency_ms_per_frame": 0.3657864622904786
+  },
+  "J_gate": {
+   "params": 1764873,
+   "mflops": 62.496,
+   "latency_ms": 7.401249487884343,
+   "latency_ms_per_frame": 0.2643303388530122
+  },
+  "K_rel_gate": {
+   "params": 1765833,
+   "mflops": 62.54976,
+   "latency_ms": 4.9341454287059605,
+   "latency_ms_per_frame": 0.17621947959664144
+  },
+  "K_qual_gate": {
+   "params": 1710537,
+   "mflops": 59.453184,
+   "latency_ms": 4.837707965634763,
+   "latency_ms_per_frame": 0.17277528448695584
+  },
+  "K_unc_gate": {
+   "params": 1765161,
+   "mflops": 62.512128,
+   "latency_ms": 6.437417003326118,
+   "latency_ms_per_frame": 0.22990775011878992
+  },
+  "K_rel_unc_gate": {
+   "params": 1766121,
+   "mflops": 62.565888,
+   "latency_ms": 8.329020987730473,
+   "latency_ms_per_frame": 0.2974650352760883
+  },
+  "L_trel_gate": {
+   "params": 1807881,
+   "mflops": 67.194624,
+   "latency_ms": 10.082041553687304,
+   "latency_ms_per_frame": 0.36007291263168945
+  },
+  "L_trel_unc_gate": {
+   "params": 1808169,
+   "mflops": 67.210752,
+   "latency_ms": 9.249020542483777,
+   "latency_ms_per_frame": 0.33032216223156347
+  },
+  "twostream": {
+   "params": 4526022,
+   "mflops": 108.928512,
+   "latency_ms": 15.739271009806544,
+   "latency_ms_per_frame": 0.5621168217788052
+  },
+  "sentcls": {
+   "params": 1709192,
+   "mflops": 58.399104,
+   "latency_ms": 4.432749934494495,
+   "latency_ms_per_frame": 0.1583124976605177
+  },
+  "M_hrgb": {
+   "params": 1194600,
+   "mflops": 30.707712,
+   "latency_ms": 3.553186950739473,
+   "latency_ms_per_frame": 0.1268995339549812
+  },
+  "N_hrgb_hand_concat": {
+   "params": 1551048,
+   "mflops": 50.577408,
+   "latency_ms": 6.3848954741843045,
+   "latency_ms_per_frame": 0.228031981220868
+  },
+  "N_hrgb_hand_trel": {
+   "params": 1557290,
+   "mflops": 53.2224,
+   "latency_ms": 6.485562946181744,
+   "latency_ms_per_frame": 0.23162724807791943
+  },
+  "Q_hrgb_pose_hand_concat": {
+   "params": 1819974,
+   "mflops": 65.576448,
+   "latency_ms": 4.121416539419442,
+   "latency_ms_per_frame": 0.14719344783640867
+  },
+  "Q_hrgb_pose_hand_trel": {
+   "params": 1807881,
+   "mflops": 67.194624,
+   "latency_ms": 8.115104516036808,
+   "latency_ms_per_frame": 0.2898251612870289
+  },
+  "R_all4_concat": {
+   "params": 2223342,
+   "mflops": 88.026624,
+   "latency_ms": 6.712020956911147,
+   "latency_ms_per_frame": 0.2397150341753981
+  },
+  "R_all4_trel": {
+   "params": 2192914,
+   "mflops": 88.617984,
+   "latency_ms": 9.849166497588158,
+   "latency_ms_per_frame": 0.3517559463424342
+  },
+  "G_concat_d256": {
+   "params": 3064710,
+   "mflops": 108.537856,
+   "latency_ms": 6.416604504920542,
+   "latency_ms_per_frame": 0.22916444660430507
+  },
+  "G_concat_noaug": {
+   "params": 1819974,
+   "mflops": 65.576448,
+   "latency_ms": 4.612666496541351,
+   "latency_ms_per_frame": 0.1647380891621911
+  },
+  "L_trel_gate_noaug": {
+   "params": 1807881,
+   "mflops": 67.194624,
+   "latency_ms": 5.5660629295744,
+   "latency_ms_per_frame": 0.1987879617705143
+  },
+  "G_concat_nomoddrop": {
+   "params": 1819974,
+   "mflops": 65.576448,
+   "latency_ms": 5.035624548327178,
+   "latency_ms_per_frame": 0.17984373386882777
+  },
+  "L_trel_gate_nomoddrop": {
+   "params": 1807881,
+   "mflops": 67.194624,
+   "latency_ms": 6.083375017624348,
+   "latency_ms_per_frame": 0.21726339348658388
+  },
+  "G_concat_lstm": {
+   "params": 1622214,
+   "mflops": 115.121664,
+   "latency_ms": 9.4275624724105,
+   "latency_ms_per_frame": 0.3366986597289464
+  },
+  "L_trel_gate_lstm": {
+   "params": 1610121,
+   "mflops": 116.73984,
+   "latency_ms": 8.66904150461778,
+   "latency_ms_per_frame": 0.3096086251649207
+  }
+ }
+}

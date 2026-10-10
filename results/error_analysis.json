@@ -1,0 +1,1247 @@
+{
+ "L_trel_gate|clean": {
+  "config": "L_trel_gate",
+  "cond": "clean",
+  "n_hyps": 1989,
+  "wer": 84.8590021691974,
+  "top_substitutions": [
+   [
+    "YOU -> I",
+    56
+   ],
+   [
+    "IT -> YOU",
+    30
+   ],
+   [
+    "YOU -> NOT",
+    30
+   ],
+   [
+    "YOU -> ME",
+    27
+   ],
+   [
+    "ME -> YOU",
+    21
+   ],
+   [
+    "ME -> I",
+    17
+   ],
+   [
+    "NOT -> I",
+    16
+   ],
+   [
+    "WHAT -> I",
+    15
+   ],
+   [
+    "HELP -> I",
+    13
+   ],
+   [
+    "MY -> I",
+    13
+   ],
+   [
+    "YOU -> DO",
+    12
+   ],
+   [
+    "THAT -> YOU",
+    12
+   ],
+   [
+    "GO -> I",
+    11
+   ],
+   [
+    "I -> NOT",
+    11
+   ],
+   [
+    "ME -> NOT",
+    11
+   ]
+  ],
+  "top_deletions": [
+   [
+    "I",
+    263
+   ],
+   [
+    "YOU",
+    222
+   ],
+   [
+    "NOT",
+    148
+   ],
+   [
+    "WHAT",
+    98
+   ],
+   [
+    "DO",
+    94
+   ],
+   [
+    "HOW",
+    79
+   ],
+   [
+    "HE",
+    66
+   ],
+   [
+    "IT",
+    55
+   ],
+   [
+    "TAKE",
+    48
+   ],
+   [
+    "IN",
+    39
+   ],
+   [
+    "HELP",
+    38
+   ],
+   [
+    "WE",
+    37
+   ],
+   [
+    "FROM",
+    34
+   ],
+   [
+    "TO",
+    33
+   ],
+   [
+    "MAKE",
+    31
+   ]
+  ],
+  "top_insertions": [
+   [
+    "I",
+    30
+   ],
+   [
+    "WHAT",
+    7
+   ],
+   [
+    "HE",
+    5
+   ],
+   [
+    "YOU",
+    5
+   ],
+   [
+    "DO",
+    5
+   ],
+   [
+    "NOT",
+    4
+   ],
+   [
+    "FEELING",
+    3
+   ],
+   [
+    "HOW",
+    3
+   ],
+   [
+    "THIS",
+    3
+   ],
+   [
+    "ENJOYED",
+    2
+   ],
+   [
+    "REALLY",
+    1
+   ],
+   [
+    "NEED",
+    1
+   ],
+   [
+    "PLACE",
+    1
+   ],
+   [
+    "HI",
+    1
+   ],
+   [
+    "BRING",
+    1
+   ]
+  ],
+  "gloss_accuracy_by_sentence_frequency": {
+   "gloss in 1 sentence": {
+    "n_glosses": 115,
+    "recall": 8.478802992518704
+   },
+   "gloss in 2-3 sentences": {
+    "n_glosses": 35,
+    "recall": 9.348093480934809
+   },
+   "gloss in >=4 sentences": {
+    "n_glosses": 12,
+    "recall": 26.847034339229968
+   }
+  },
+  "wer_by_signer": {
+   "1": 87.8,
+   "2": 87.4,
+   "3": 82.05,
+   "4": 83.55,
+   "5": 81.83,
+   "6": 82.23,
+   "7": 89.16
+  },
+  "wer_phone_vs_dslr": {
+   "phone": 87.59920634920636,
+   "dslr": 83.73137374974485
+  },
+  "wer_by_ref_length": {
+   "1": 190.48,
+   "2": 84.23,
+   "3": 82.54,
+   "4": 84.8,
+   "5": 85.24,
+   "6": 86.19,
+   "7": 89.63
+  },
+  "error_rate_by_position(len>=3)": {
+   "first": 73.07,
+   "middle": 85.53,
+   "last": 93.79
+  },
+  "hardest_sentences": [
+   [
+    190.5,
+    "congratulations"
+   ],
+   [
+    102.4,
+    "had your food"
+   ],
+   [
+    100.0,
+    "you are welcome"
+   ],
+   [
+    100.0,
+    "when will the train leave"
+   ],
+   [
+    100.0,
+    "what happened"
+   ],
+   [
+    100.0,
+    "how are things"
+   ],
+   [
+    98.8,
+    "he she is my friend"
+   ],
+   [
+    98.1,
+    "tell me truth"
+   ],
+   [
+    97.6,
+    "you are bad"
+   ],
+   [
+    97.6,
+    "speak softly"
+   ]
+  ],
+  "easiest_sentences": [
+   [
+    68.3,
+    "hi how are you"
+   ],
+   [
+    66.7,
+    "what you want"
+   ],
+   [
+    66.7,
+    "i got hurt"
+   ],
+   [
+    65.5,
+    "what do you think"
+   ],
+   [
+    65.1,
+    "comb your hair"
+   ],
+   [
+    61.9,
+    "who are you"
+   ],
+   [
+    59.5,
+    "i am crying"
+   ],
+   [
+    54.0,
+    "i need water"
+   ],
+   [
+    45.2,
+    "i am hungry"
+   ],
+   [
+    44.4,
+    "what do you do"
+   ]
+  ],
+  "examples": {
+   "correct": [
+    {
+     "id": "serve the food|7",
+     "ref": "SERVE FOOD",
+     "hyp": "SERVE FOOD"
+    },
+    {
+     "id": "i need water|1",
+     "ref": "I NEED WATER",
+     "hyp": "I NEED WATER"
+    },
+    {
+     "id": "prepare the bed|4",
+     "ref": "PREPARE BED",
+     "hyp": "PREPARE BED"
+    },
+    {
+     "id": "prepare the bed|2",
+     "ref": "PREPARE BED",
+     "hyp": "PREPARE BED"
+    },
+    {
+     "id": "i am crying|3",
+     "ref": "I CRY",
+     "hyp": "I CRY"
+    },
+    {
+     "id": "wear the shirt|7",
+     "ref": "WEAR SHIRT",
+     "hyp": "WEAR SHIRT"
+    }
+   ],
+   "one_error": [
+    {
+     "id": "who are you|4",
+     "ref": "WHO YOU",
+     "hyp": "WHAT YOU"
+    },
+    {
+     "id": "i am hungry|5",
+     "ref": "I HUNGRY",
+     "hyp": "I NEED"
+    },
+    {
+     "id": "i promise|4",
+     "ref": "I PROMISE",
+     "hyp": "I BE"
+    },
+    {
+     "id": "i am tired|2",
+     "ref": "I TIRED",
+     "hyp": "I HELP"
+    },
+    {
+     "id": "i am tired|7",
+     "ref": "I TIRED",
+     "hyp": "I PROMISE"
+    },
+    {
+     "id": "go and sleep|7",
+     "ref": "GO SLEEP",
+     "hyp": "NOT SLEEP"
+    }
+   ],
+   "bad": [
+    {
+     "id": "i am feeling bored|3",
+     "ref": "I FEELING BORED",
+     "hyp": "YOU HIDE"
+    },
+    {
+     "id": "what happened|4",
+     "ref": "WHAT HAPPENED",
+     "hyp": "WHY YOU"
+    },
+    {
+     "id": "speak softly|5",
+     "ref": "SPEAK SOFTLY",
+     "hyp": "WHAT YOU"
+    },
+    {
+     "id": "you do anything, i do not care|2",
+     "ref": "YOU DO ANYTHING I NOT CARE",
+     "hyp": "WE BED"
+    },
+    {
+     "id": "shall we go outside|5",
+     "ref": "WE GO OUTSIDE",
+     "hyp": "YOU WELCOME"
+    },
+    {
+     "id": "do not worry|3",
+     "ref": "NOT WORRY",
+     "hyp": "I NOT FAVOUR"
+    }
+   ]
+  }
+ },
+ "G_concat|clean": {
+  "config": "G_concat",
+  "cond": "clean",
+  "n_hyps": 1989,
+  "wer": 84.56977584960231,
+  "top_substitutions": [
+   [
+    "YOU -> I",
+    51
+   ],
+   [
+    "ME -> YOU",
+    29
+   ],
+   [
+    "IT -> YOU",
+    29
+   ],
+   [
+    "YOU -> NOT",
+    24
+   ],
+   [
+    "NOT -> I",
+    20
+   ],
+   [
+    "YOU -> ME",
+    18
+   ],
+   [
+    "MY -> I",
+    13
+   ],
+   [
+    "HELP -> I",
+    13
+   ],
+   [
+    "ME -> I",
+    13
+   ],
+   [
+    "YOU -> REALLY",
+    13
+   ],
+   [
+    "TRAIN -> YOU",
+    12
+   ],
+   [
+    "DO -> YOU",
+    12
+   ],
+   [
+    "HOW -> YOU",
+    12
+   ],
+   [
+    "WHY -> I",
+    12
+   ],
+   [
+    "GO -> I",
+    12
+   ]
+  ],
+  "top_deletions": [
+   [
+    "I",
+    221
+   ],
+   [
+    "YOU",
+    176
+   ],
+   [
+    "NOT",
+    143
+   ],
+   [
+    "DO",
+    101
+   ],
+   [
+    "WHAT",
+    99
+   ],
+   [
+    "HOW",
+    72
+   ],
+   [
+    "HE",
+    61
+   ],
+   [
+    "TAKE",
+    49
+   ],
+   [
+    "IT",
+    46
+   ],
+   [
+    "IN",
+    38
+   ],
+   [
+    "REALLY",
+    38
+   ],
+   [
+    "WE",
+    33
+   ],
+   [
+    "GOT",
+    32
+   ],
+   [
+    "HELP",
+    32
+   ],
+   [
+    "FROM",
+    31
+   ]
+  ],
+  "top_insertions": [
+   [
+    "I",
+    35
+   ],
+   [
+    "NOT",
+    13
+   ],
+   [
+    "YOU",
+    12
+   ],
+   [
+    "HE",
+    7
+   ],
+   [
+    "HOW",
+    6
+   ],
+   [
+    "WHAT",
+    6
+   ],
+   [
+    "WHY",
+    5
+   ],
+   [
+    "FEELING",
+    5
+   ],
+   [
+    "NEED",
+    4
+   ],
+   [
+    "WE",
+    4
+   ],
+   [
+    "THIS",
+    3
+   ],
+   [
+    "TRY",
+    3
+   ],
+   [
+    "DISAPPOINTED",
+    2
+   ],
+   [
+    "HI",
+    2
+   ],
+   [
+    "SOMEHOW",
+    2
+   ]
+  ],
+  "gloss_accuracy_by_sentence_frequency": {
+   "gloss in 1 sentence": {
+    "n_glosses": 115,
+    "recall": 7.315045719035744
+   },
+   "gloss in 2-3 sentences": {
+    "n_glosses": 35,
+    "recall": 10.33210332103321
+   },
+   "gloss in >=4 sentences": {
+    "n_glosses": 12,
+    "recall": 29.691293791189732
+   }
+  },
+  "wer_by_signer": {
+   "1": 86.81,
+   "2": 89.38,
+   "3": 82.54,
+   "4": 78.57,
+   "5": 82.43,
+   "6": 82.93,
+   "7": 88.96
+  },
+  "wer_phone_vs_dslr": {
+   "phone": 88.0952380952381,
+   "dslr": 83.11900387834253
+  },
+  "wer_by_ref_length": {
+   "1": 209.52,
+   "2": 89.49,
+   "3": 80.83,
+   "4": 83.77,
+   "5": 84.6,
+   "6": 85.59,
+   "7": 90.14
+  },
+  "error_rate_by_position(len>=3)": {
+   "first": 70.79,
+   "middle": 84.62,
+   "last": 93.22
+  },
+  "hardest_sentences": [
+   [
+    209.5,
+    "congratulations"
+   ],
+   [
+    108.3,
+    "what happened"
+   ],
+   [
+    107.1,
+    "wear the shirt"
+   ],
+   [
+    104.8,
+    "you are good"
+   ],
+   [
+    102.4,
+    "do not worry"
+   ],
+   [
+    100.0,
+    "you are welcome"
+   ],
+   [
+    100.0,
+    "prepare the bed"
+   ],
+   [
+    100.0,
+    "help me"
+   ],
+   [
+    100.0,
+    "go and sleep"
+   ],
+   [
+    98.4,
+    "are you free today"
+   ]
+  ],
+  "easiest_sentences": [
+   [
+    66.7,
+    "i do not agree"
+   ],
+   [
+    66.7,
+    "hi how are you"
+   ],
+   [
+    64.3,
+    "i promise"
+   ],
+   [
+    63.5,
+    "what are you doing"
+   ],
+   [
+    63.5,
+    "comb your hair"
+   ],
+   [
+    61.1,
+    "i am (age)"
+   ],
+   [
+    58.7,
+    "i got hurt"
+   ],
+   [
+    54.0,
+    "i need water"
+   ],
+   [
+    52.4,
+    "i am hungry"
+   ],
+   [
+    46.3,
+    "what do you do"
+   ]
+  ],
+  "examples": {
+   "correct": [
+    {
+     "id": "you are welcome|2",
+     "ref": "YOU WELCOME",
+     "hyp": "YOU WELCOME"
+    },
+    {
+     "id": "prepare the bed|6",
+     "ref": "PREPARE BED",
+     "hyp": "PREPARE BED"
+    },
+    {
+     "id": "you are bad|3",
+     "ref": "YOU BAD",
+     "hyp": "YOU BAD"
+    },
+    {
+     "id": "wear the shirt|6",
+     "ref": "WEAR SHIRT",
+     "hyp": "WEAR SHIRT"
+    },
+    {
+     "id": "comb your hair|1",
+     "ref": "COMB YOU HAIR",
+     "hyp": "COMB YOU HAIR"
+    },
+    {
+     "id": "i am crying|3",
+     "ref": "I CRY",
+     "hyp": "I CRY"
+    }
+   ],
+   "one_error": [
+    {
+     "id": "i got hurt|2",
+     "ref": "I GOT HURT",
+     "hyp": "I HURT HURT"
+    },
+    {
+     "id": "how are things|7",
+     "ref": "HOW THINGS",
+     "hyp": "YOU THINGS"
+    },
+    {
+     "id": "i am hungry|7",
+     "ref": "I HUNGRY",
+     "hyp": "I AFRAID"
+    },
+    {
+     "id": "i am (age)|3",
+     "ref": "I AGE",
+     "hyp": "I CRY"
+    },
+    {
+     "id": "i am crying|7",
+     "ref": "I CRY",
+     "hyp": "I FEELING"
+    },
+    {
+     "id": "you are welcome|5",
+     "ref": "YOU WELCOME",
+     "hyp": "YOU PLEASE"
+    }
+   ],
+   "bad": [
+    {
+     "id": "nice to meet you|5",
+     "ref": "NICE MEET YOU",
+     "hyp": "I NEED"
+    },
+    {
+     "id": "what did you tell him|7",
+     "ref": "WHAT YOU TELL HIM",
+     "hyp": "SPEAK SOFTLY"
+    },
+    {
+     "id": "what do you think|2",
+     "ref": "WHAT DO YOU THINK",
+     "hyp": "YOUR TO"
+    },
+    {
+     "id": "he she is my friend|2",
+     "ref": "HE SHE MY FRIEND",
+     "hyp": "I VERY"
+    },
+    {
+     "id": "are you free today|5",
+     "ref": "YOU FREE TODAY",
+     "hyp": "I NOT"
+    },
+    {
+     "id": "how are things|5",
+     "ref": "HOW THINGS",
+     "hyp": "HOW NOT NEED"
+    }
+   ]
+  }
+ },
+ "A_rgb|clean": {
+  "config": "A_rgb",
+  "cond": "clean",
+  "n_hyps": 1989,
+  "wer": 83.97686189443239,
+  "top_substitutions": [
+   [
+    "ME -> YOU",
+    20
+   ],
+   [
+    "YOU -> I",
+    14
+   ],
+   [
+    "YOU -> NOT",
+    14
+   ],
+   [
+    "YOU -> ME",
+    12
+   ],
+   [
+    "YOU -> DO",
+    11
+   ],
+   [
+    "HELP -> YOU",
+    10
+   ],
+   [
+    "SOFTLY -> YOU",
+    8
+   ],
+   [
+    "FOOD -> YOU",
+    7
+   ],
+   [
+    "TO -> YOU",
+    7
+   ],
+   [
+    "WITH -> YOU",
+    7
+   ],
+   [
+    "YOU -> WHAT",
+    7
+   ],
+   [
+    "YOU -> IT",
+    7
+   ],
+   [
+    "I -> NOT",
+    6
+   ],
+   [
+    "NOT -> YOU",
+    6
+   ],
+   [
+    "SOMEONE -> YOU",
+    6
+   ]
+  ],
+  "top_deletions": [
+   [
+    "YOU",
+    341
+   ],
+   [
+    "I",
+    300
+   ],
+   [
+    "NOT",
+    169
+   ],
+   [
+    "WHAT",
+    125
+   ],
+   [
+    "DO",
+    119
+   ],
+   [
+    "HOW",
+    99
+   ],
+   [
+    "IT",
+    84
+   ],
+   [
+    "HE",
+    61
+   ],
+   [
+    "ME",
+    60
+   ],
+   [
+    "TO",
+    55
+   ],
+   [
+    "TAKE",
+    54
+   ],
+   [
+    "HELP",
+    48
+   ],
+   [
+    "REALLY",
+    42
+   ],
+   [
+    "WATER",
+    37
+   ],
+   [
+    "WHY",
+    36
+   ]
+  ],
+  "top_insertions": [
+   [
+    "I",
+    32
+   ],
+   [
+    "YOU",
+    27
+   ],
+   [
+    "NOT",
+    20
+   ],
+   [
+    "DO",
+    10
+   ],
+   [
+    "HE",
+    9
+   ],
+   [
+    "WHAT",
+    7
+   ],
+   [
+    "THANK",
+    6
+   ],
+   [
+    "WHY",
+    6
+   ],
+   [
+    "HOW",
+    6
+   ],
+   [
+    "GO",
+    5
+   ],
+   [
+    "LET",
+    5
+   ],
+   [
+    "FEELING",
+    5
+   ],
+   [
+    "WE",
+    4
+   ],
+   [
+    "ON",
+    3
+   ],
+   [
+    "TURN",
+    3
+   ]
+  ],
+  "gloss_accuracy_by_sentence_frequency": {
+   "gloss in 1 sentence": {
+    "n_glosses": 115,
+    "recall": 13.009143807148794
+   },
+   "gloss in 2-3 sentences": {
+    "n_glosses": 35,
+    "recall": 14.329643296432964
+   },
+   "gloss in >=4 sentences": {
+    "n_glosses": 12,
+    "recall": 27.92230315643427
+   }
+  },
+  "wer_by_signer": {
+   "1": 92.06,
+   "2": 87.2,
+   "3": 76.13,
+   "4": 78.35,
+   "5": 86.35,
+   "6": 79.32,
+   "7": 88.13
+  },
+  "wer_phone_vs_dslr": {
+   "phone": 89.6329365079365,
+   "dslr": 81.64931618697693
+  },
+  "wer_by_ref_length": {
+   "1": 133.33,
+   "2": 87.18,
+   "3": 84.71,
+   "4": 81.1,
+   "5": 86.03,
+   "6": 80.63,
+   "7": 85.54
+  },
+  "error_rate_by_position(len>=3)": {
+   "first": 72.88,
+   "middle": 84.11,
+   "last": 84.66
+  },
+  "hardest_sentences": [
+   [
+    133.3,
+    "congratulations"
+   ],
+   [
+    109.5,
+    "you are bad"
+   ],
+   [
+    107.1,
+    "you are welcome"
+   ],
+   [
+    107.1,
+    "serve the food"
+   ],
+   [
+    105.6,
+    "what happened"
+   ],
+   [
+    103.2,
+    "he came by train"
+   ],
+   [
+    101.6,
+    "are you free today"
+   ],
+   [
+    100.0,
+    "tell me truth"
+   ],
+   [
+    100.0,
+    "speak softly"
+   ],
+   [
+    98.1,
+    "he is on the way"
+   ]
+  ],
+  "easiest_sentences": [
+   [
+    64.3,
+    "take care of yourself"
+   ],
+   [
+    63.9,
+    "i am (age)"
+   ],
+   [
+    61.9,
+    "turn on light turn off light"
+   ],
+   [
+    61.9,
+    "i am feeling cold"
+   ],
+   [
+    61.1,
+    "what do you do"
+   ],
+   [
+    59.5,
+    "who are you"
+   ],
+   [
+    59.5,
+    "i am crying"
+   ],
+   [
+    58.3,
+    "i am suffering from fever"
+   ],
+   [
+    52.4,
+    "i do not mean it"
+   ],
+   [
+    49.2,
+    "comb your hair"
+   ]
+  ],
+  "examples": {
+   "correct": [
+    {
+     "id": "i am suffering from fever|4",
+     "ref": "I SUFFERING FROM FEVER",
+     "hyp": "I SUFFERING FROM FEVER"
+    },
+    {
+     "id": "i am suffering from fever|6",
+     "ref": "I SUFFERING FROM FEVER",
+     "hyp": "I SUFFERING FROM FEVER"
+    },
+    {
+     "id": "prepare the bed|6",
+     "ref": "PREPARE BED",
+     "hyp": "PREPARE BED"
+    },
+    {
+     "id": "take care of yourself|3",
+     "ref": "TAKE CARE OF YOURSELF",
+     "hyp": "TAKE CARE OF YOURSELF"
+    },
+    {
+     "id": "congratulations|3",
+     "ref": "CONGRATULATIONS",
+     "hyp": "CONGRATULATIONS"
+    },
+    {
+     "id": "let him take time|4",
+     "ref": "LET HIM TAKE TIME",
+     "hyp": "LET HIM TAKE TIME"
+    }
+   ],
+   "one_error": [
+    {
+     "id": "what you want|2",
+     "ref": "WHAT YOU WANT",
+     "hyp": "YOU WANT"
+    },
+    {
+     "id": "i am (age)|4",
+     "ref": "I AGE",
+     "hyp": "I"
+    },
+    {
+     "id": "what did you tell him|3",
+     "ref": "WHAT YOU TELL HIM",
+     "hyp": "YOU TELL HIM"
+    },
+    {
+     "id": "you are bad|2",
+     "ref": "YOU BAD",
+     "hyp": "YOU"
+    },
+    {
+     "id": "congratulations|4",
+     "ref": "CONGRATULATIONS",
+     "hyp": "GO"
+    },
+    {
+     "id": "i am hungry|2",
+     "ref": "I HUNGRY",
+     "hyp": "HUNGRY HUNGRY"
+    }
+   ],
+   "bad": [
+    {
+     "id": "how are things|3",
+     "ref": "HOW THINGS",
+     "hyp": ""
+    },
+    {
+     "id": "i enjoyed a lot|4",
+     "ref": "I ENJOYED A LOT",
+     "hyp": "I VERY HAPPY THE HAPPY"
+    },
+    {
+     "id": "how dare you|6",
+     "ref": "HOW DARE YOU",
+     "hyp": "NOT IT"
+    },
+    {
+     "id": "he is going into the room|1",
+     "ref": "HE GO INTO ROOM",
+     "hyp": ""
+    },
+    {
+     "id": "i am really grateful|3",
+     "ref": "I REALLY GRATEFUL",
+     "hyp": "YOU HEART"
+    },
+    {
+     "id": "are you hiding something|5",
+     "ref": "YOU HIDE SOMETHING",
+     "hyp": "ME"
+    }
+   ]
+  }
+ }
+}
