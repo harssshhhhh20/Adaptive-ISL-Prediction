@@ -1,14 +1,18 @@
-"""Live OpenCV demo: continuous ISL recognition running frame-by-frame on held-out test videos.
+"""OpenCV demo: landmark-based ISL recognition running frame-by-frame on held-out test videos.
 
-    python demo/app.py                    # INCLUDE sign sequences (default)
-    python demo/app.py --dataset sentences  # ISL-CSLTR natural sentences
-    python demo/app.py --video my.mp4     # any video file
+Three modes, each labelled for what it really is:
+    isolated   INCLUDE-50 isolated signs, one sign per clip (the paper's headline benchmark)   [default]
+    sequences  sequences made by joining isolated INCLUDE clips (continuous decoding, no natural
+               co-articulation between signs)
+    sentences  natural continuous ISL sentences from ISL-CSLTR (hard; accuracy is low)
 
-Keys:  SPACE pause | N next | P previous | R replay | D switch dataset | F fixed/adaptive fusion | Q quit
+    python demo/app.py [--dataset isolated|sequences|sentences] [--video my.mp4]
+
+Keys:  SPACE pause | N next | P previous | R replay | D switch mode | F fixed/adaptive fusion | Q quit
 
 Every video shown is from the held-out TEST split (never used for training or model selection).
-MediaPipe tracking and the recogniser run live while the video plays; the gloss line is the model's
-current hypothesis for what has been signed so far, and is final when the video ends.
+The model is a CTC recogniser: it reads the frame stream without being told where signs start or
+end. The gloss line is its current hypothesis while the video plays and is final when it ends.
 """
 import argparse
 import json
@@ -19,6 +23,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 import torch
+import torch.nn.functional as F
 
 ROOT = Path(__file__).resolve().parents[1]
 for p in ("src", "scripts", "demo"):
@@ -34,6 +39,11 @@ SEQUENCES = [["HELLO", "HOW-ARE-YOU"], ["GOOD-MORNING", "I", "HAPPY"], ["SHE", "
              ["HE", "DEAF"], ["GOOD-NIGHT", "WE", "HAPPY"], ["THEY", "RICH"], ["I", "SAD"],
              ["HELLO", "YOU", "PLEASED"], ["GOOD-EVENING", "THEY", "POOR"], ["YOU", "QUIET"], ["IT", "LOUD"],
              ["GOOD-AFTERNOON", "ALRIGHT"], ["WE", "THANK-YOU"], ["HELLO", "SHE", "HAPPY", "THANK-YOU"]]
+# Sign sequences over the INCLUDE-50 vocabulary, built from held-out TEST clips only (seed 7).
+SEQUENCES50 = [["HELLO", "GOOD-MORNING"], ["I", "HAPPY"], ["BOY", "BIG-LARGE"], ["GIRL", "HAPPY", "THANK-YOU"],
+               ["BLACK", "DOG"], ["RED", "CAR"], ["NEW", "CELL-PHONE"], ["FATHER", "TEACHER"],
+               ["BROTHER", "NEW", "SHOES"], ["WHITE", "HOUSE"], ["SMALL-LITTLE", "BIRD"], ["HOT", "SUMMER"],
+               ["MONDAY", "BANK"], ["GOOD-MORNING", "TEACHER"], ["I", "PAINT", "WINDOW"]]
 W, H = 1180, 680            # window
 VW, VH = 800, 450           # video area
 POSE_EDGES = [(11, 12), (11, 13), (13, 15), (12, 14), (14, 16), (11, 23), (12, 24), (23, 24)]
@@ -50,9 +60,86 @@ def load_state(path):
 
 
 # ----------------------------------------------------------------------------- recognisers
+class Include50Recogniser:
+    """INCLUDE-50 model (official split, 50 signs). Isolated test clips, closed-set prediction."""
+    name = "Isolated signs: INCLUDE-50 (50 signs)"
+    caption = "One sign per clip, as in the INCLUDE-50 benchmark"
+
+    def __init__(self, fusion=None):
+        fusion = fusion or "concat"          # the paper's model; F toggles to adaptive
+        runs = [json.loads(p.read_text()) for p in sorted((ROOT / "results" / "include50").glob("*.json"))]
+        pool = [r for r in runs if r["fusion"] == fusion]
+        best = min(pool, key=lambda r: r["val_wer"])              # chosen on validation only
+        self.fusion, self.itos = best["fusion"], best["vocab"]
+        self.model = build_model(len(self.itos), ["pose", "hand"], best["fusion"])
+        self.model.load_state_dict(load_state(ROOT / "models" / "include50" / f"include50_{best['fusion']}_s{best['seed']}.pt"))
+        self.model.eval()
+        same = [r for r in runs if r["fusion"] == self.fusion]
+        self.stats = [f"Test results ({len(same)} seeds, 192 held-out clips):",
+                      f"  sign accuracy          {np.mean([r['test_isolated_accuracy_closed'] for r in same]):.1f}%",
+                      "  INCLUDE paper (best)   94.5%",
+                      f"  sign-chain WER         {np.mean([r['test_sequences']['wer'] for r in same]):.1f}%"]
+        self.label = f"{'Adaptive' if self.fusion == 'trel_gate' else 'Fixed'} fusion (seed {best['seed']}, best on validation)"
+
+    def items(self):
+        from train_include50 import load
+        clips = load()[0]["test"]
+        order = np.random.default_rng(0).permutation(len(clips))   # fixed, varied order
+        out = []
+        for k in order:
+            sid, g, _ = clips[k]
+            folder, stem = sid.split("|")
+            out.append(dict(paths=[ROOT / "data" / "include" / "videos" / folder / f"{stem}.mp4"], ref=[g], title=g))
+        return out
+
+    def classify(self, post, n):
+        """Top-3 signs by CTC likelihood of a single-sign label (normalised over the 50 classes)."""
+        C = len(self.itos) - 1
+        lp = torch.log(post[:n].clamp_min(1e-8))[:, None, :].expand(-1, C, -1)
+        nll = F.ctc_loss(lp, torch.arange(1, C + 1)[:, None], torch.full((C,), n), torch.ones(C, dtype=torch.long),
+                         blank=0, reduction="none", zero_infinity=True)
+        p = torch.softmax(-nll, 0)
+        top = p.topk(3)
+        return [(self.itos[i + 1], float(v)) for v, i in zip(top.values.tolist(), top.indices.tolist())]
+
+    def sentence(self, post, n):
+        return None
+
+
+class Include50SequenceRecogniser(Include50Recogniser):
+    """Same INCLUDE-50 model, shown on sequences of joined held-out test clips (free CTC decoding)."""
+    name = "Sign sequences: joined INCLUDE-50 clips (50)"
+    caption = "Continuous decoding of joined isolated clips (no co-articulation)"
+    classify = None                          # multi-sign output: no single-class prediction
+
+    def __init__(self, fusion=None):
+        super().__init__(fusion)
+        runs = [json.loads(p.read_text()) for p in sorted((ROOT / "results" / "include50").glob("*.json"))]
+        same = [r for r in runs if r["fusion"] == self.fusion]
+        self.stats = [f"Test results ({len(same)} seeds, 400 test-clip chains):",
+                      f"  sign-chain WER         {np.mean([r['test_sequences']['wer'] for r in same]):.1f}%",
+                      f"  exact sequences        {np.mean([r['test_sequences']['sent_acc'] for r in same]):.1f}%",
+                      f"  isolated sign acc.     {np.mean([r['test_isolated_accuracy_closed'] for r in same]):.1f}%"]
+
+    def items(self):
+        from train_include50 import load
+        test_by = {}
+        for sid, g, _ in load()[0]["test"]:
+            test_by.setdefault(g, []).append(sid)
+        rng = np.random.default_rng(7)
+        out = []
+        for seq in SEQUENCES50:
+            seq = [g for g in seq if g in test_by]
+            sids = [test_by[g][rng.integers(len(test_by[g]))] for g in seq]
+            paths = [ROOT / "data" / "include" / "videos" / sd.split("|")[0] / (sd.split("|")[1] + ".mp4") for sd in sids]
+            out.append(dict(paths=paths, ref=seq, title=" ".join(seq)))
+        return out
+
+
 class IncludeRecogniser:
-    """Sign-sequence model trained on INCLUDE (official split)."""
-    name = "INCLUDE sign sequences (24 signs)"
+    """Sign-sequence model trained on chains of INCLUDE clips (official split, 24 signs)."""
+    name = "Sign sequences: joined INCLUDE clips (24)"
+    caption = "Continuous decoding of joined isolated clips (no co-articulation)"
 
     def __init__(self, fusion=None):
         from train_include import VOCAB
@@ -91,7 +178,8 @@ class IncludeRecogniser:
 
 class SentenceRecogniser:
     """Natural-sentence model trained on ISL-CSLTR videos (40 sentences)."""
-    name = "ISL-CSLTR natural sentences (40)"
+    name = "Natural continuous sentences: ISL-CSLTR (40)"
+    caption = "Real continuous signing - the hard, unsolved case"
 
     def __init__(self, fusion=None):
         from train_demo import CONFIGS, constrained, demo_table
@@ -206,7 +294,8 @@ def render(state, rec, frame, lm, glosses, weights, item, idx, n_items, fps, fin
     img[10:10 + VH, 10:10 + VW] = v
     # --- bottom panel: recognition
     y0 = VH + 30
-    text(img, "LIVE RECOGNITION" if final is None else "FINAL OUTPUT", (14, y0), 0.5, C_MUT)
+    text(img, "LIVE HYPOTHESIS" if final is None else ("PREDICTED SIGN" if final.get("top") else "FINAL OUTPUT"),
+         (14, y0), 0.5, C_MUT)
     gloss_chips(img, glosses or ["..."], item["ref"], 20, y0 + 42, 1.0, final=final is not None)
     text(img, "Ground truth:", (14, y0 + 90), 0.5, C_MUT)
     text(img, " ".join(item["ref"]), (130, y0 + 90), 0.6, C_TXT, 1)
@@ -217,13 +306,15 @@ def render(state, rec, frame, lm, glosses, weights, item, idx, n_items, fps, fin
         text(img, verdict, (14, y0 + 125), 0.6, C_OK if ok else C_BAD, 2)
         if final.get("sentence"):
             text(img, f'Closest known sentence: "{final["sentence"]}"', (260, y0 + 125), 0.55, C_ACC, 1)
+        if final.get("top"):
+            text(img, "Top-3: " + "   ".join(f"{g} {100 * p:.0f}%" for g, p in final["top"]), (260, y0 + 125), 0.55, C_ACC, 1)
     # --- right panel: info
     x = VW + 30
-    text(img, "Continuous ISL Recognition", (x, 40), 0.7, C_TXT, 2)
+    text(img, "ISL Sign Recognition", (x, 40), 0.7, C_TXT, 2)
     text(img, rec.name, (x, 68), 0.5, C_ACC)
-    text(img, rec.label, (x, 92), 0.45, C_MUT)
-    text(img, "MediaPipe pose+hands -> fusion ->", (x, 120), 0.45, C_MUT)
-    text(img, "Transformer -> CTC (no boundaries given)", (x, 140), 0.45, C_MUT)
+    text(img, rec.caption, (x, 90), 0.42, C_MUT)
+    text(img, rec.label, (x, 112), 0.42, C_MUT)
+    text(img, "Landmarks -> fusion -> Transformer -> CTC", (x, 140), 0.42, C_MUT)
     for k, line in enumerate(rec.stats):
         text(img, line, (x, 180 + 22 * k), 0.47, C_TXT if k == 0 else C_MUT)
     yb = 200 + 22 * len(rec.stats)
@@ -242,7 +333,7 @@ def render(state, rec, frame, lm, glosses, weights, item, idx, n_items, fps, fin
              (x, yb + 114), 0.45, C_MUT)
     text(img, f"{fps:4.1f} fps (tracking + recognition)" + ("   PAUSED" if state.get("paused") else ""), (x, yb + 138), 0.45, C_MUT)
     for k, line in enumerate(["SPACE pause   N next   P previous   R replay",
-                              "D switch dataset   F fixed/adaptive   Q quit"]):
+                              "D switch mode   F fixed/adaptive   Q quit"]):
         text(img, line, (x, H - 40 + 20 * k), 0.42, C_MUT)
     return img
 
@@ -290,6 +381,9 @@ def play(item, rec, idx, n_items, show, tally, state):
             return key
     glosses, weights, post = decode(rec, P, Hh, HS, Q, size)
     final = dict(sentence=rec.sentence(post, len(P)))
+    if getattr(rec, "classify", None):                 # isolated mode: predicted sign = top-1 class
+        final["top"] = rec.classify(post, len(P))
+        glosses = [final["top"][0][0]]
     e = sum(align_counts(item["ref"], glosses))
     tally[0] += e; tally[1] += len(item["ref"]); tally[2] += glosses == item["ref"]; tally[3] += 1
     img = render(state, rec, frame, None, glosses, weights, item, idx, n_items, fps, final=final, tally=tally)
@@ -302,7 +396,7 @@ def play(item, rec, idx, n_items, show, tally, state):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dataset", choices=["signs", "sentences"], default="signs")
+    ap.add_argument("--dataset", choices=["isolated", "sequences", "sentences"], default="isolated")
     ap.add_argument("--video", help="run on any video file instead of the test set")
     ap.add_argument("--auto", action="store_true", help="advance automatically after each video")
     ap.add_argument("--hold", type=float, default=4.0, help="seconds to hold the final result in --auto mode")
@@ -320,11 +414,12 @@ def main():
                 snap["last"] = img
             return None
         if img is not None:
-            cv2.imshow("Continuous ISL Recognition", img)
+            cv2.imshow("ISL Sign Recognition", img)
         k = cv2.waitKey(wait_ms) & 0xFF
         return keymap.get(k)
 
-    kinds = {"signs": IncludeRecogniser, "sentences": SentenceRecogniser}
+    kinds = {"isolated": Include50Recogniser, "sequences": Include50SequenceRecogniser, "sentences": SentenceRecogniser}
+    cycle = ["isolated", "sequences", "sentences"]
     dataset, fusion = a.dataset, None
     rec = kinds[dataset](fusion)
     items = rec.items() if not a.video else [dict(paths=[Path(a.video)], ref=[], title=Path(a.video).name)]
@@ -345,7 +440,7 @@ def main():
             idx = (idx + 1) % len(items)
         elif act in ("dataset", "fusion"):
             if act == "dataset" and not a.video:
-                dataset = "sentences" if dataset == "signs" else "signs"
+                dataset = cycle[(cycle.index(dataset) + 1) % len(cycle)]
             if act == "fusion":
                 fusion = "concat" if rec.fusion == "trel_gate" else "trel_gate"
             rec = kinds[dataset](fusion)

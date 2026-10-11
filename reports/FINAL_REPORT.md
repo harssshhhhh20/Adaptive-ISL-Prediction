@@ -15,8 +15,11 @@ We tested whether **adaptive, reliability-aware multimodal fusion** improves con
 - The learned fusion weights moved in the right direction when a modality was removed. However, they collapsed onto a single modality in 3 of 7 folds, and they were unrelated to recognition errors (ρ = 0.04).
 
 **Exploratory follow-up.**
-- On INCLUDE isolated signs (official split, 24 signs), the same landmark CTC pipeline reaches 93.1 % sign accuracy and 7.1 % WER on chains of held-out clips.
+- On INCLUDE isolated signs, the same landmark CTC pipeline reaches 93.1 % sign accuracy on a 24-sign subset.
+- On the full official **INCLUDE-50 benchmark** it reaches **96.2 ± 1.6 %** (fixed fusion, 3 seeds; 5 minutes of CPU training per run). That is on par with the 94.5 % published by the dataset authors.
 - Fixed fusion again beat adaptive fusion there.
+
+**Scope.** The strong numbers above are for *isolated* signs and for sequences of joined isolated clips. Natural continuous ISL sentence recognition was not achieved.
 
 **Conclusion.** On the data available, adaptive fusion did not produce a statistically significant or practically meaningful improvement, and the evidence does not support an "adaptive fusion improves ISL CSLR" paper.
 
@@ -253,7 +256,7 @@ The improvement cannot be attributed to the adaptive mechanism, because there is
 ## 19. Recommended next experiments
 1. **Finish the pre-registered grid with ≥ 5 seeds:** cross-domain, unseen sentences, sentcls and C_hand on LOSO, TwoStream, and the J/K gate ablations. About 1 day on the M2.
 2. **Re-run the study on the full-rate ISL-CSLTR videos** (all 97 sentences). The 40-sentence video models reached 64.6 % WER (signer-seen). The key-frame models scored 76–79 % on the 97-sentence signer-dependent split. These are not directly comparable, because the vocabularies differ, but they suggest dense tracking helps.
-3. **Use a larger signer pool or pre-training,** for example a landmark encoder pre-trained on all of INCLUDE (263 signs, 4,292 clips), then fine-tuned for CTC on sentences.
+3. **Use a larger signer pool or pre-training.** INCLUDE-50 is now ready to use (96 % accuracy). One option: a landmark encoder pre-trained on all of INCLUDE (263 signs, 4,292 clips), then fine-tuned for CTC on sentences.
 4. **Extract the image-corruption conditions,** the experiment where adaptive fusion should help most if it helps at all.
 5. **Involve Deaf ISL signers** in data collection and evaluation (repeated takes, natural sentences).
 
@@ -268,6 +271,25 @@ The improvement cannot be attributed to the adaptive mechanism, because there is
 | Adaptive fusion | 88.2 ± 1.3 % | 11.4 ± 2.1 | 71.7 % |
 
 - **Limitations:** chains lack co-articulation, so these are not natural continuous sentences, and the result is not comparable to the INCLUDE paper's full 263-sign task.
+
+### A1b. INCLUDE-50 (official benchmark, all 50 signs), run 2026-10-11
+- **Setup:** the official AI4Bharat split (689 / 77 / 192 clips). Same landmark CTC pipeline, trained on random chains of 1–4 training clips (25 % single clips).
+- **Checkpoint selection:** by validation WER; the test clips were never used for training or selection.
+- **Benchmark metric:** accuracy on the 192 test clips, where the predicted sign is the class with the highest CTC likelihood among the 50.
+
+| Model (3 seeds) | Test accuracy, closed-set | Free-decoding accuracy | Sequence WER ↓ (400 test chains) | Exact sequences | Train time per run (M2) |
+|---|---:|---:|---:|---:|---:|
+| Fixed fusion | **96.2 ± 1.6 %** | 92.5 ± 1.6 % | **8.1 ± 0.8** | **81.2 %** | 5.0 min |
+| Adaptive fusion | 95.0 ± 1.3 % | 89.6 ± 2.1 % | 10.9 ± 2.8 | 75.0 % | 5.9 min |
+| INCLUDE paper, best reported | 94.5 % | — | — | — | — |
+
+- **Comparison with the published result:** fixed fusion is on par with the INCLUDE authors' best reported INCLUDE-50 accuracy (94.5 %), on the same split and metric.
+- **No improvement claimed:**
+  - 3 seeds give a 95 % t-interval of roughly [92.2, 100].
+  - With 192 test clips, the binomial standard error is about 1.4 points.
+  - We have not surveyed later INCLUDE-50 results, so no state-of-the-art claim is made.
+- **The point of interest:** this level is reached with a 1.3 M-parameter landmark model trained in 5 minutes on a laptop CPU.
+- **Adaptive fusion** is again below fixed fusion on every metric.
 
 ### A2. ISL-CSLTR videos, 40 sentences
 - **Setup:** one held-out video per sentence; each test video is a person never seen signing that sentence.

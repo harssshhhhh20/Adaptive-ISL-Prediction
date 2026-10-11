@@ -1,10 +1,16 @@
-"""Live continuous ISL recognition from the webcam (24 INCLUDE signs).
+"""Live ISL sign recognition from the webcam.
 
-    python demo/live.py                 # default camera
+Vocabulary: the 50 INCLUDE-50 signs (default) or the 24-sign demo set (--vocab 24). The models were
+trained on ISOLATED sign clips (INCLUDE); with CTC they can also decode several signs signed in a
+row, but natural continuous signing (with co-articulation) was not part of training, and live
+accuracy on new users has not been measured.
+
+    python demo/live.py                 # default camera, 50 signs
+    python demo/live.py --vocab 24      # 24-sign model
     python demo/live.py --camera 1      # another camera
     python demo/live.py --camera clip.mp4   # a video file treated as a live stream (testing)
 
-How to use: raise your hands into view and sign one or more of the listed signs, then lower your
+How to use: raise your hands into view and sign one (or a few) of the listed signs, then lower your
 hands. Recognition starts automatically when hands are raised and finishes ~0.8 s after they drop.
 Press L to watch a reference clip of a sign ([ / ] to change sign) and copy it.
 
@@ -24,15 +30,15 @@ import torch
 ROOT = Path(__file__).resolve().parents[1]
 for p in ("src", "scripts", "demo"):
     sys.path.insert(0, str(ROOT / p))
-from app import (C_ACC, C_BG, C_HAND, C_MUT, C_OK, C_PANEL, C_POSE, C_TXT, FONT, IncludeRecogniser,  # noqa: E402
-                 decode, draw_landmarks, text)
+from app import (C_ACC, C_BG, C_HAND, C_MUT, C_OK, C_PANEL, C_POSE, C_TXT, FONT, Include50Recogniser,  # noqa: E402
+                 IncludeRecogniser, decode, draw_landmarks, text)
 from extract_video_lm import Tracker  # noqa: E402
 from train_include import load_clips  # noqa: E402
 
 PROC_SIZE = (640, 360)       # INCLUDE videos were processed at 640x360 (16:9)
 SAMPLE_MS = 80               # 12.5 landmark frames per second, as in training
 PRE_ROLL, END_GAP, MIN_LEN, MAX_LEN = 6, 10, 8, 160
-W, H = 1240, 700
+W, H = 1240, 760
 VW, VH = 860, 484
 
 
@@ -51,9 +57,9 @@ def hands_raised(p, h):
 class Reference:
     """Looping reference clips of each sign, from the TRAINING split."""
 
-    def __init__(self, vocab):
+    def __init__(self, vocab, train_clips):
         self.clips = {}
-        for sid, g, _ in load_clips()["train"]:
+        for sid, g, _ in train_clips:
             self.clips.setdefault(g, sid)
         self.signs = [g for g in vocab if g in self.clips]
         self.i, self.cap, self.cur = 0, None, None
@@ -92,6 +98,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--camera", default="0")
     ap.add_argument("--fusion", choices=["trel_gate", "concat"], default=None)
+    ap.add_argument("--vocab", choices=["50", "24"], default="50")
     ap.add_argument("--snapshots", help="headless test: save frames here instead of opening a window")
     a = ap.parse_args()
     torch.set_num_threads(4)
@@ -101,8 +108,13 @@ def main():
         sys.exit(f"Could not open camera/video {a.camera!r}. On macOS allow camera access for your "
                  f"terminal app in System Settings > Privacy & Security > Camera.")
     is_file = not isinstance(src, int)
-    rec = IncludeRecogniser(a.fusion)
-    ref = Reference(rec.itos[1:])
+    if a.vocab == "50":
+        from train_include50 import load as load50
+        Rec, train_clips = Include50Recogniser, load50()[0]["train"]
+    else:
+        Rec, train_clips = IncludeRecogniser, load_clips()["train"]
+    rec = Rec(a.fusion)
+    ref = Reference(rec.itos[1:], train_clips)
     tracker = Tracker()
     t_start = time.time()
 
@@ -139,7 +151,10 @@ def main():
                     live, weights, _ = decode(rec, *[[x[i] for x in buf] for i in range(4)], PROC_SIZE)
                 if (gap >= END_GAP and not manual) or len(buf) >= MAX_LEN:
                     if len(buf) - gap >= MIN_LEN:
-                        final, weights, _ = decode(rec, *[[x[i] for x in buf] for i in range(4)], PROC_SIZE)
+                        final, weights, post = decode(rec, *[[x[i] for x in buf] for i in range(4)], PROC_SIZE)
+                        if len(final) <= 1 and getattr(rec, "classify", None):
+                            top = rec.classify(post, len(buf))    # single attempt: most likely sign
+                            final = [f"{top[0][0]} ({100 * top[0][1]:.0f}%)"] if final or top[0][1] > 0.5 else final
                         history.appendleft((time.strftime("%H:%M:%S"), final))
                     state, ring, live = "idle", deque(maxlen=PRE_ROLL), []
 
@@ -166,11 +181,11 @@ def main():
             text(img, f"{ts}  {' '.join(g) or '(nothing recognised)'}", (90 + 0 * k, y0 + 90 + 24 * k), 0.5, C_TXT)
 
         x = VW + 30
-        text(img, "Live ISL Recognition", (x, 38), 0.72, C_TXT, 2)
-        text(img, rec.label, (x, 62), 0.42, C_MUT)
-        text(img, "Model test accuracy (held-out signers' clips):", (x, 88), 0.42, C_MUT)
-        text(img, rec.stats[1].strip() + " | " + rec.stats[2].strip().replace("sequence gloss acc.", "seq."), (x, 108), 0.42, C_ACC)
-        text(img, "Live accuracy on you: not evaluated", (x, 128), 0.42, C_MUT)
+        text(img, "Live ISL Sign Recognition", (x, 38), 0.72, C_TXT, 2)
+        text(img, f"{len(rec.itos) - 1}-sign vocabulary, trained on isolated clips;", (x, 60), 0.42, C_MUT)
+        text(img, "sign one sign, or a few in a row", (x, 78), 0.42, C_MUT)
+        text(img, rec.stats[1].strip() + " (held-out test clips)", (x, 102), 0.42, C_ACC)
+        text(img, "Live accuracy on you: not evaluated", (x, 122), 0.42, C_MUT)
         if weights is not None:
             for j, (m, col) in enumerate(zip(["pose", "hand"], [C_POSE, C_HAND])):
                 yy = 146 + 22 * j
@@ -180,16 +195,17 @@ def main():
         if show_ref:
             g, rf = ref.frame()
             if rf is not None:
-                rh = int(rf.shape[0] * 330 / rf.shape[1])
-                img[200:200 + rh, x:x + 330] = cv2.resize(rf, (330, rh))
-                text(img, f"Reference: {g}   ([ / ] to change)", (x, 200 + rh + 22), 0.5, C_ACC, 1)
-            ytxt = 200 + 186 + 50
+                rh = int(rf.shape[0] * 300 / rf.shape[1])
+                img[196:196 + rh, x:x + 300] = cv2.resize(rf, (300, rh))
+                text(img, f"Reference: {g}   ([ / ] to change)", (x, 196 + rh + 20), 0.48, C_ACC, 1)
+            ytxt = 196 + 169 + 46
         else:
             ytxt = 210
         text(img, "Signs it knows:", (x, ytxt), 0.47, C_TXT)
         words = rec.itos[1:]
-        for k in range(0, len(words), 3):
-            text(img, "  ".join(words[k:k + 3]), (x, ytxt + 22 + 20 * (k // 3)), 0.42, C_MUT)
+        per = 4 if len(words) > 30 else 3
+        for k in range(0, len(words), per):
+            text(img, "  ".join(words[k:k + per]), (x, ytxt + 20 + 17 * (k // per)), 0.36, C_MUT)
         text(img, f"{fps:4.1f} fps", (x, H - 52), 0.42, C_MUT)
         text(img, "SPACE start/stop  L learn  [ ] sign  F fusion  C clear  Q quit", (x, H - 28), 0.4, C_MUT)
 
@@ -216,7 +232,7 @@ def main():
         elif key == ord("c"):
             history.clear()
         elif key == ord("f"):
-            rec = IncludeRecogniser("concat" if rec.fusion == "trel_gate" else "trel_gate")
+            rec = Rec("concat" if rec.fusion == "trel_gate" else "trel_gate")
     if a.snapshots:
         print("history:", list(history))
     cap.release()

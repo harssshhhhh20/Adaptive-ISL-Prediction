@@ -52,6 +52,21 @@ python demo/live.py
 4. Run `train_include.py` for seeds 0, 1 and 2 with each fusion (`trel_gate`, `concat`); outputs go to `models/include/` and `results/include/`.
 5. `app.py` replays held-out test videos; `live.py` runs on the webcam.
 
+## A2. INCLUDE-50 benchmark (one command, ~2 h on the M2, 2026-10-11)
+```bash
+caffeinate -i scripts/include50_pipeline.sh
+```
+The script fetches the official 50-sign split (10.1 GB transferred, 12 parallel byte-range requests with back-off for Zenodo's HTTP 429), extracts landmarks, then trains 3 seeds × {fixed, adaptive} into `models/include50/` and `results/include50/`.
+
+Measured times:
+
+| Step | Time |
+|---|---|
+| Download | 85 min |
+| Landmark tracking (790 new clips) | 8.5 min |
+| Training (6 runs, 2 in parallel, ~5–6 min each) | 18 min |
+| **Total** | **1 h 52 min** |
+
 ## B. Research study (ISL-CSLTR key-frames, pre-registered in `reports/PREREGISTRATION.md`)
 The study's raw frames, features and checkpoints were deleted to save space; the per-run result JSONs are kept in `results/runs/`.
 

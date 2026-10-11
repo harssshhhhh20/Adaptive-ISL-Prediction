@@ -1,4 +1,4 @@
-# Model card: continuous ISL recognisers (landmark CTC models)
+# Model card: landmark-based ISL recognisers (CTC models for isolated signs and sign sequences)
 
 ## Model details
 - **Pipeline:**
@@ -12,18 +12,21 @@
   6. CTC head with greedy decoding. Training adds auxiliary per-modality CTC heads.
 - **Size:** about 1.3 M parameters (pose + hand) and about 45–67 MFLOPs per sentence. CPU inference takes 2–10 ms per sentence.
 - **Checkpoints:**
+  - `models/include50/include50_{concat,trel_gate}_s{0,1,2}.pt`: the 50 INCLUDE-50 signs (vocabulary stored in `results/include50/*.json`).
   - `models/include/{trel_gate,concat}_s{0,1,2}.pt`: 24 INCLUDE signs.
   - `models/demo/{adaptive,fixed}_s{0,1,2}.pt`: 40 ISL-CSLTR sentences, 55 glosses.
 - **Training:** AdamW, OneCycle schedule (lr 3e-3), dropout 0.3, and feature-level augmentation (speed 0.8–1.2×, 10 % frame drop, landmark noise, modality dropout p = 0.15). The checkpoint with the best validation WER is kept.
 
 ## Intended use
-Research and teaching demonstrations of continuous sign recognition over a **closed, small vocabulary**.
+Research and teaching demonstrations of ISL sign recognition over a **closed, small vocabulary**: isolated signs, and sequences of signs. They are **not** for natural continuous signing, where accuracy is low.
 
 **Not intended** for interpreting real conversations, for accessibility services, or for any decision affecting Deaf people.
 
 ## Evaluation (held-out test data, mean ± SD over 3 seeds)
 | Model | Data / split | Metric | Fixed fusion | Adaptive fusion |
 |---|---|---|---:|---:|
+| **INCLUDE-50 benchmark (official split)** | 192 test clips, closed-set over 50 signs | sign accuracy | **96.2 ± 1.6 %** | 95.0 ± 1.3 % |
+| INCLUDE-50 | 400 chains of test clips | WER ↓ | **8.1 ± 0.8** | 10.9 ± 2.8 |
 | INCLUDE, 24 signs | official test clips (87), isolated | sign accuracy | **93.1 ± 2.0 %** | 88.2 ± 1.3 % |
 | INCLUDE, 24 signs | 400 chains of test clips | WER ↓ | **7.1 ± 1.2** | 11.4 ± 2.1 |
 | INCLUDE, 24 signs | 400 chains of test clips | exact sequence | **82.0 %** | 71.7 % |
