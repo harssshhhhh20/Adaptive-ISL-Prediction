@@ -1,5 +1,4 @@
-# Everything in the project is tracked (data, features, models, results) so collaborators get the
-# full working project. Only logs and machine-generated junk are excluded.
+# Logs and machine-generated files
 logs/
 __pycache__/
 *.pyc

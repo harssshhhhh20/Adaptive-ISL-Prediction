@@ -149,4 +149,4 @@ Estimates are built from the measurements above; ranges reflect network speed an
 **Minimum hardware** to reproduce everything except end-to-end video training:
 - 8 GB RAM and 4 CPU cores; no GPU needed.
 - About 15 GB of free disk while downloading, about 2 GB afterwards.
-- Close other memory-heavy apps: running `llama-server` and Docker at the same time slowed this machine 3–10×.
+- Close other memory-heavy applications while extracting and training.

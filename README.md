@@ -99,51 +99,18 @@ Sources: `results/`, `reports/FINAL_REPORT.md`. Figures and tables are regenerat
 | Inference | 2–10 ms per sentence; live webcam ≈ 13 fps, limited by MediaPipe tracking |
 | Full INCLUDE-50 pipeline (download, tracking, 6 trainings) | 1 h 52 min |
 
-**Publication readiness of the original adaptive-fusion claim: 15 / 45.** It is not supported. See [reports/FINAL_REPORT.md](reports/FINAL_REPORT.md) §18.
-
----
-
-## Research paper topic (one joint paper)
-
-### Recommended main topic
-> **"Lightweight Landmark-Based Indian Sign Language Recognition: From Isolated Signs to Continuous Sequences, and When Simple Fusion Beats Adaptive Fusion"**
-
-It rests on the strongest results already in hand:
-1. **Benchmark parity:** 96.2 % on INCLUDE-50 (published 94.5 %), with a 1.3 M-parameter model trained in 5 min on a laptop CPU.
-2. **Continuous decoding of sign sequences** built from isolated clips, without boundary supervision (8.1 % WER). These are not natural sentences.
-3. **Pre-registered negative result:** adaptive fusion never beat fixed fusion (§3, §5, §6).
-4. **Evaluation audit:** on ISL-CSLTR unseen signers, nothing beats a constant output (§4).
-
-The full writing guide (abstract draft, outline, numbers, allowed and forbidden claims, checklist) is in [paper/PAPER_KIT.md](paper/PAPER_KIT.md).
-
-### Optional extensions to make the same paper stronger
-Pick one or two. Each adds a section and evidence to the same paper rather than becoming a separate one. Effort figures are estimates for this Mac.
-
-| Extension | What it adds | Already here | Still needed |
-|---|---|---|---|
-| **Must-do before submitting** | Credibility | 3-seed results | Survey newer INCLUDE-50 papers; 5 seeds + significance test; hand-only / pose-only / no-augmentation ablations; `VERIFY` citations (~2 h compute + reading) |
-| **Robustness section** | How much lighting, occlusion and tracking failure hurt, and whether fusion helps there (the case adaptive fusion was designed for) | Corruption suite already written | Run it on the INCLUDE-50 test clips (~half a day) |
-| **Second benchmark** | Full INCLUDE (263 signs) vs the published 85.6 %, so the parity claim doesn't rest on one benchmark | Pipeline ready | ~a weekend, mostly the 57 GB download |
-| **Stronger audit section** | Turns the ISL-CSLTR finding into a solid contribution | All key evidence | Full-rate videos, 5 seeds, cross-domain and unseen-sentence protocols (~1 day) |
-| **Pre-training experiment** | Whether INCLUDE pre-training fixes unseen-signer sentence recognition | Both pipelines ready | ~1–2 days; outcome unknown |
-
-**Suggested plan:**
-1. Do the **must-do items** and the **robustness section**, about 1 day of compute in total; these give the biggest gain for the effort.
-2. While that runs, one of you writes the paper from `paper/PAPER_KIT.md` and the other does the literature survey and checks the citations.
-3. Add the second benchmark if the target venue expects more than one dataset.
-
 ---
 
 ## Documents
 | File | Contents |
 |---|---|
-| [paper/PAPER_KIT.md](paper/PAPER_KIT.md) | For the paper writer: title, abstract draft, contributions, outline mapped to sources, key numbers, allowed and forbidden claims, remaining to-dos, submission checklist. Figures in `paper/figures/`, LaTeX tables in `paper/tables.tex` |
-| [reports/FINAL_REPORT.md](reports/FINAL_REPORT.md) | Full research report: protocol, results, statistics, robustness, ablation, error and fusion analysis, efficiency, limitations, readiness score, next steps |
+| [reports/FINAL_REPORT.md](reports/FINAL_REPORT.md) | Full research report: protocol, results, statistics, robustness, ablation, error and fusion analysis, efficiency, limitations, next steps |
+| `paper/` | Figures (`figures/`), LaTeX tables (`tables.tex`) and the script that regenerates them from the results (`make_figures.py`) |
 | [reports/PREREGISTRATION.md](reports/PREREGISTRATION.md) | Analysis plan written before training, plus dated amendments (all deviations) |
 | [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | Environment, exact commands, seeds, measured costs, time and compute estimates for full training |
 | [DATA.md](DATA.md) | Datasets, licences (both CC BY 4.0), preprocessing, label corrections, splits, ethics |
 | [MODEL_CARD.md](MODEL_CARD.md) | Intended use, metrics, limitations, failure modes |
-| [references.bib](references.bib) | Citations (entries marked VERIFY need checking before submission) |
+| [references.bib](references.bib) | Citations |
 | `results/` | Generated tables (`tables.md`), analyses (`summary.json`, `error_analysis.json`, `fusion_analysis.json`, `efficiency.json`), per-run study results (`runs/`), INCLUDE / INCLUDE-50 / ISL-CSLTR-video metrics |
 
 ## Quick start
@@ -182,14 +149,6 @@ data/      gloss table + metadata, ISL-CSLTR demo videos, INCLUDE clips + offici
 features/  extracted MediaPipe landmarks
 models/    MediaPipe task files, trained checkpoints (models/include, models/include50, models/demo)
 results/   metrics, tables, analyses, per-run study results
-paper/     paper kit, figures, LaTeX tables
+paper/     figures, LaTeX tables, figure script
 reports/   final report, pre-registration
 ```
-
-## Working together
-- **Sharing through git:** large regenerable folders (videos, features) are listed in `.gitignore`. Share `models/`, `features/` and `data/*/videos` separately (for example a cloud-drive zip, about 380 MB), or regenerate them with the scripts.
-- **Licence:** choose one for the *code* before publishing; MIT and Apache-2.0 are common choices. The data stays CC BY 4.0 and must be cited (`references.bib`).
-- **Before submitting anything:**
-  - re-check the `VERIFY` entries in `references.bib`;
-  - state the limitations in `MODEL_CARD.md`;
-  - do not present the system as an interpreter for Deaf users.

@@ -1,6 +1,6 @@
 # Adaptive Multimodal Fusion for Continuous Indian Sign Language Recognition: a pre-registered evaluation
 
-*Status: complete research report. The pre-registration is in `reports/PREREGISTRATION.md`; deviations from it are listed in §6.4.*
+*The pre-registration is in `reports/PREREGISTRATION.md`; deviations from it are listed in §6.4.*
 
 ## 1. Abstract
 We tested whether **adaptive, reliability-aware multimodal fusion** improves continuous Indian Sign Language (ISL) recognition. The fusion combines RGB, body-pose and hand-landmark streams with per-frame weights conditioned on features, quality signals and temporal context. The baselines were RGB-only, fixed concatenation fusion and cross-modal attention fusion.
@@ -21,7 +21,7 @@ We tested whether **adaptive, reliability-aware multimodal fusion** improves con
 
 **Scope.** The strong numbers above are for *isolated* signs and for sequences of joined isolated clips. Natural continuous ISL sentence recognition was not achieved.
 
-**Conclusion.** On the data available, adaptive fusion did not produce a statistically significant or practically meaningful improvement, and the evidence does not support an "adaptive fusion improves ISL CSLR" paper.
+**Conclusion.** On the data available, adaptive fusion did not produce a statistically significant or practically meaningful improvement over fixed fusion.
 
 ## 2. Problem definition
 Continuous sign language recognition (CSLR) maps an unsegmented video of a signed sentence to its gloss sequence, with no sign boundaries given at training or test time.
@@ -235,25 +235,7 @@ The improvement cannot be attributed to the adaptive mechanism, because there is
 - PHOENIX numbers (19–21 % WER) come from a different language and recording setup, roughly 10× more training sentences, and end-to-end fine-tuned video backbones.
 - **What our numbers do show:** on ISL-CSLTR, signer-independent CSLR with frozen features is at the level of a trivial constant baseline. Any future claim on this corpus should report that baseline and the closed-set sentence-classifier diagnostic.
 
-## 18. Publication-readiness assessment
-| Criterion | Score (0–5) | Reason |
-|---|---:|---|
-| Scientific contribution | 1 | Proposed mechanism not supported; the only solid contribution is a negative / benchmark-audit finding |
-| Performance improvement | 0 | +0.9 WER (worse), p = 0.30 |
-| Statistical evidence | 3 | Pre-registered, paired tests, cluster CIs and Holm correction; but 3 seeds and an incomplete grid |
-| Generalisation | 1 | Unseen signers at constant-baseline level; cross-domain and unseen sentences not run |
-| Robustness | 1 | Feature-level conditions only; no advantage over fixed fusion |
-| Reproducibility | 4 | Public data, scripts, seeds, pre-registration, per-run outputs; intermediates must be regenerated |
-| Comparison with SOTA | 1 | No comparable published numbers; TwoStream not trained |
-| Ablation quality | 1 | Most planned ablations not run |
-| Dataset / evaluation quality | 3 | Careful leakage checks, label corrections, trivial and closed-set baselines; dataset too small |
-| **Total** | **15 / 45** | **< 25: do not write the paper yet** |
-
-### The two questions
-- **Did our model produce a statistically significant and practically meaningful improvement over credible existing approaches?** **No.** Signer-independent: +0.9 WER versus the strongest baseline, p = 0.30, and no model beats a constant output. Signer-dependent: better than RGB-only but not significantly better than fixed fusion. Exploratory INCLUDE study: fixed fusion beat adaptive fusion.
-- **Is the evidence strong enough to justify writing a research paper?** **Not for the adaptive-fusion claim.** A short, honest **negative-result / benchmark-audit paper** may be viable after the experiments in §19. Its message would be that ISL-CSLTR cannot currently support signer-independent CSLR claims, together with the trivial and closed-set baselines that future work should report. A workshop would be the realistic venue.
-
-## 19. Recommended next experiments
+## 18. Recommended next experiments
 1. **Finish the pre-registered grid with ≥ 5 seeds:** cross-domain, unseen sentences, sentcls and C_hand on LOSO, TwoStream, and the J/K gate ablations. About 1 day on the M2.
 2. **Re-run the study on the full-rate ISL-CSLTR videos** (all 97 sentences). The 40-sentence video models reached 64.6 % WER (signer-seen). The key-frame models scored 76–79 % on the 97-sentence signer-dependent split. These are not directly comparable, because the vocabularies differ, but they suggest dense tracking helps.
 3. **Use a larger signer pool or pre-training.** INCLUDE-50 is now ready to use (96 % accuracy). One option: a landmark encoder pre-trained on all of INCLUDE (263 signs, 4,292 clips), then fine-tuned for CTC on sentences.
