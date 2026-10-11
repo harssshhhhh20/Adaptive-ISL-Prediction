@@ -2,13 +2,16 @@
 
 Three modes, each labelled for what it really is:
     isolated   INCLUDE-50 isolated signs, one sign per clip (the paper's headline benchmark)   [default]
-    sequences  sequences made by joining isolated INCLUDE clips (continuous decoding, no natural
-               co-articulation between signs)
+    sequences  sequences made by joining isolated INCLUDE-50 test clips (continuous decoding, no
+               natural co-articulation between signs)
     sentences  natural continuous ISL sentences from ISL-CSLTR (hard; accuracy is low)
 
     python demo/app.py [--dataset isolated|sequences|sentences] [--video my.mp4]
 
 Keys:  SPACE pause | N next | P previous | R replay | D switch mode | F fixed/adaptive fusion | Q quit
+
+The two INCLUDE-50 modes use the 50-sign model with fixed fusion by default (the paper's model;
+best seed chosen on validation); F switches to adaptive fusion.
 
 Every video shown is from the held-out TEST split (never used for training or model selection).
 The model is a CTC recogniser: it reads the frame stream without being told where signs start or

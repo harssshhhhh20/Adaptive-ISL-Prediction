@@ -160,12 +160,12 @@ python demo/app.py
 python demo/live.py
 ```
 - `app.py` replays held-out test videos with recognition running live. Press **D** to switch between its three modes, each labelled on screen:
-  1. **Isolated signs (INCLUDE-50, default):** predicted sign, top-3 alternatives, running accuracy.
-  2. **Sign sequences:** joined isolated clips, decoded continuously.
+  1. **Isolated signs (INCLUDE-50, default):** predicted sign, top-3 alternatives, running accuracy over the 192 test clips.
+  2. **Sign sequences:** joined INCLUDE-50 test clips, decoded continuously.
   3. **Natural continuous sentences (ISL-CSLTR):** the hard case, where accuracy is low.
 
-  Other keys: SPACE pause, N/P next/previous, F fixed/adaptive, Q quit.
-- `live.py` runs on your webcam with the **50-sign INCLUDE-50 model** (`--vocab 24` for the smaller one). Raise your hands and sign one sign, or a few in a row; L shows a reference clip to copy. The models were trained on isolated clips.
+  Modes 1 and 2 use the **50-sign model with fixed fusion** (the paper's model). Other keys: SPACE pause, N/P next/previous, F fixed/adaptive, Q quit.
+- `live.py` runs on your webcam with the **50-sign INCLUDE-50 model, fixed fusion** (`--vocab 24` for the older 24-sign model). Raise your hands and sign one sign, or a few in a row; L shows a reference clip to copy. The models were trained on isolated clips.
 
 The trained models, landmark files and shrunk videos are included, so the demos run without downloading anything. To rebuild everything, follow [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 
