@@ -1,14 +1,9 @@
-# Large / regenerable artefacts (see REPRODUCIBILITY.md to rebuild; share models via release or drive link)
-data/videos/
-data/include/videos/
-data/frames/
-data/_raw_videos/
-data/include/_raw/
-features/
-models/torch/
-results/runs/**/*.pt
-results/runs/**/*.weights.pkl
+# Everything in the project is tracked (data, features, models, results) so collaborators get the
+# full working project. Only logs and machine-generated junk are excluded.
 logs/
 __pycache__/
 *.pyc
 .DS_Store
+data/_raw_videos/
+data/include/_raw/
+data/_frames_part.bin

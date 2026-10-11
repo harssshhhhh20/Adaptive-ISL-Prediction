@@ -59,7 +59,7 @@ python paper/make_figures.py
 | "a research prototype for a closed vocabulary" | "sign-language interpreter" or "accessibility tool" |
 
 ## 7. Still to do before submission
-These are listed in priority order; commands are in `REPRODUCIBILITY.md`, and Claude can run them.
+These are listed in priority order; commands are in `REPRODUCIBILITY.md`.
 1. **Literature check:** recent INCLUDE-50 / INCLUDE results. This decides the wording of contribution 1.
 2. **5 seeds** for the INCLUDE-50 fixed and adaptive runs, plus a paired significance test. Per-clip predictions must be saved first (a small code change). About 30 min.
 3. **INCLUDE-50 ablations:** hand-only, pose-only, no augmentation, BiLSTM backbone. About 1 h.
